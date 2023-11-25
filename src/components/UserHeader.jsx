@@ -10,11 +10,15 @@ import {
   Portal,
   Text,
   VStack,
+  useColorMode,
   useToast,
 } from '@chakra-ui/react'
 import { BsInstagram } from 'react-icons/bs'
 import { CgMoreO } from 'react-icons/cg'
 const UserHeader = () => {
+  // color mode to change text color for copy to clipboard
+  const { colorMode, toggleColorMode } = useColorMode()
+
   // toast shown when URL copied to clipboard
   const toast = useToast()
 
@@ -76,8 +80,11 @@ const UserHeader = () => {
                 <CgMoreO size={24} cursor={'pointer'} />
               </MenuButton>
               <Portal>
-                <MenuList bg={'gray.dark'}>
-                  <MenuItem bg={'gray.dark'} onClick={copyURL}>
+                <MenuList bg={colorMode == 'dark' ? 'gray.dark' : 'white'}>
+                  <MenuItem
+                    bg={colorMode == 'dark' ? 'gray.dark' : 'white'}
+                    onClick={copyURL}
+                  >
                     Copy Link
                   </MenuItem>
                 </MenuList>
