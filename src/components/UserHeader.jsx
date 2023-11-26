@@ -93,6 +93,31 @@ const UserHeader = () => {
           </Box>
         </Flex>
       </Flex>
+
+      {/* Threads/Replies flex */}
+      <Flex w={'full'}>
+        <Flex
+          flex={1}
+          borderBottom={
+            colorMode === 'dark' ? '1.5px solid white' : '2px solid black'
+          }
+          justifyContent={'center'}
+          pb={3}
+          cursor={'pointer'}
+        >
+          <Text fontWeight={'bold'}>Threads</Text>
+        </Flex>
+        <Flex
+          flex={1}
+          borderBottom={'1px solid gray'}
+          justifyContent={'center'}
+          color={'gray.light'}
+          pb={3}
+          cursor={'pointer'}
+        >
+          <Text fontWeight={'bold'}>Replies</Text>
+        </Flex>
+      </Flex>
     </VStack>
   )
 }
