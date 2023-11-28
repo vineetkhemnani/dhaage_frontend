@@ -1,5 +1,8 @@
 import { Flex } from "@chakra-ui/react"
-
+// actions
+// 1. like
+// 2. comment
+// 3. share
 const Actions = ({ liked, setLiked }) => {
   return (
     <Flex flexDirection="column">
