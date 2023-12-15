@@ -103,7 +103,7 @@ const UserPost = ({ postImg, postTitle, likes, replies }) => {
                       </MenuItem>
                       <MenuItem
                         bg={colorMode == 'dark' ? 'gray.dark' : 'white'}
-                        _hover={{ backgroundColor: 'blue.500', color: 'white' }}
+                        _hover={{ backgroundColor: 'red', color: 'white' }}
                       >
                         Delete Post
                       </MenuItem>
