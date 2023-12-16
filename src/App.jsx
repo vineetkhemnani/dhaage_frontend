@@ -12,8 +12,8 @@ function App() {
     <Container maxW="620px">
       <Header/>
       <Routes>
+        <Route path="/" element={<UserPage/>}/>
         <Route path="/:username" element={<UserPage/>}/>
-        <Route path="/user" element={<UserPage/>}/>
         <Route path="/:username/post/:pid" element={<PostPage/>}/>
       </Routes>
     </Container>
