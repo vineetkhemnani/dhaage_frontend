@@ -74,7 +74,7 @@ export default function LoginCard() {
                   bg: useColorModeValue('gray.700', 'gray.800'),
                 }}
               >
-                Login up
+                Login in
               </Button>
             </Stack>
             <Stack pt={6}>

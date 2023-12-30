@@ -13,19 +13,65 @@ import {
   Text,
   useColorModeValue,
   Link,
+  useToast,
 } from '@chakra-ui/react'
 import { useState } from 'react'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import { useSetRecoilState } from 'recoil'
 import authScreenAtom from '../atoms/authAtom'
+import useShowToast from '../hooks/useShowToast'
+import userAtom from '../atoms/userAtom'
 
 export default function SignupCard() {
   const [showPassword, setShowPassword] = useState(false)
 
-  // setter function
+  // setter function => set login or signup page
   const setAuthScreen = useSetRecoilState(authScreenAtom)
   // works as useState with the default state set to authScreenAtom state)
 
+  //   const toast = useToast()
+  // custom hook to handle toasts
+  const showToast = useShowToast()
+
+  const setUser = useSetRecoilState(userAtom)
+  // works as useState with the default state set to authScreenAtom state)
+
+  //   state to store input fields data
+  const [inputs, setInputs] = useState({
+    name: '',
+    username: '',
+    email: '',
+    password: '',
+  })
+  const handleSignUp = async () => {
+    // console.log(inputs)
+    try {
+      const res = await fetch('/api/users/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(inputs),
+      })
+      const data = await res.json()
+
+      //   if error show error in toast
+      if (data.error) {
+        showToast('Error', data.error, 'error')
+        return
+      }
+
+      // if no error till here set user in localStorage
+      // setItem in localStorage with key "user-threads":"data fetched from backend response"
+      localStorage.setItem('user-threads', JSON.stringify(data))
+      setUser(data)
+
+      //  show success toast
+      showToast('Success', 'Successfully created user', 'success')
+    } catch (error) {
+      console.log(error)
+    }
+  }
   return (
     <Flex align={'center'} justify={'center'}>
       <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
@@ -45,24 +91,49 @@ export default function SignupCard() {
               <Box>
                 <FormControl isRequired>
                   <FormLabel>Full Name</FormLabel>
-                  <Input type="text" />
+                  <Input
+                    type="text"
+                    onChange={(e) =>
+                      setInputs({ ...inputs, name: e.target.value })
+                    }
+                    value={inputs.name}
+                  />
                 </FormControl>
               </Box>
               <Box>
                 <FormControl isRequired>
                   <FormLabel>Username</FormLabel>
-                  <Input type="text" />
+                  <Input
+                    type="text"
+                    onChange={(e) =>
+                      setInputs({ ...inputs, username: e.target.value })
+                    }
+                    value={inputs.username}
+                  />
                 </FormControl>
               </Box>
             </HStack>
             <FormControl isRequired>
               <FormLabel>Email address</FormLabel>
-              <Input type="email" />
+              <Input
+                type="email"
+                onChange={(e) =>
+                  setInputs({ ...inputs, email: e.target.value })
+                }
+                value={inputs.email}
+              />
             </FormControl>
             <FormControl isRequired>
               <FormLabel>Password</FormLabel>
               <InputGroup>
-                <Input type={showPassword ? 'text' : 'password'} />
+                <Input
+                  type={showPassword ? 'text' : 'password'}
+                  //   two-way binding for value fields
+                  onChange={(e) =>
+                    setInputs({ ...inputs, password: e.target.value })
+                  }
+                  value={inputs.password}
+                />
                 <InputRightElement h={'full'}>
                   <Button
                     variant={'ghost'}
@@ -84,6 +155,7 @@ export default function SignupCard() {
                 _hover={{
                   bg: useColorModeValue('gray.700', 'gray.800'),
                 }}
+                onClick={() => handleSignUp()}
               >
                 Sign up
               </Button>
