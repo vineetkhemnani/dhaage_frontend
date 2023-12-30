@@ -5,7 +5,6 @@ import {
   FormLabel,
   Input,
   InputGroup,
-  HStack,
   InputRightElement,
   Stack,
   Button,
@@ -16,9 +15,15 @@ import {
 } from '@chakra-ui/react'
 import { useState } from 'react'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
+import { useSetRecoilState } from 'recoil'
+import authScreenAtom from '../atoms/authAtom'
 
 export default function LoginCard() {
   const [showPassword, setShowPassword] = useState(false)
+
+  // setter function
+  const setAuthScreen = useSetRecoilState(authScreenAtom)
+  // works as useState with the default state set to authScreenAtom state
 
   return (
     <Flex align={'center'} justify={'center'}>
@@ -39,7 +44,6 @@ export default function LoginCard() {
           }}
         >
           <Stack spacing={4}>
-            
             <FormControl isRequired>
               <FormLabel>Username</FormLabel>
               <Input type="text" />
@@ -75,7 +79,16 @@ export default function LoginCard() {
             </Stack>
             <Stack pt={6}>
               <Text align={'center'}>
-                Not a user? <Link color={'blue.400'}>Signup</Link>
+                Not a user?{' '}
+                <Link
+                  color={'blue.400'}
+                  onClick={() => {
+                    // onclick change the auth state to signup
+                    setAuthScreen('signup')
+                  }}
+                >
+                  Signup
+                </Link>
               </Text>
             </Stack>
           </Stack>

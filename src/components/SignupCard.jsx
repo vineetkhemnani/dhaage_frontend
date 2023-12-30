@@ -16,21 +16,23 @@ import {
 } from '@chakra-ui/react'
 import { useState } from 'react'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
+import { useSetRecoilState } from 'recoil'
+import authScreenAtom from '../atoms/authAtom'
 
 export default function SignupCard() {
   const [showPassword, setShowPassword] = useState(false)
 
+  // setter function
+  const setAuthScreen = useSetRecoilState(authScreenAtom)
+  // works as useState with the default state set to authScreenAtom state)
+
   return (
-    <Flex
-      align={'center'}
-      justify={'center'}
-    >
+    <Flex align={'center'} justify={'center'}>
       <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
         <Stack align={'center'}>
           <Heading fontSize={'4xl'} textAlign={'center'}>
             Sign up
           </Heading>
-          
         </Stack>
         <Box
           rounded={'lg'}
@@ -77,10 +79,10 @@ export default function SignupCard() {
               <Button
                 loadingText="Submitting"
                 size="lg"
-                bg={useColorModeValue("gray.600","gray.700")}
+                bg={useColorModeValue('gray.600', 'gray.700')}
                 color={'white'}
                 _hover={{
-                  bg: useColorModeValue("gray.700","gray.800"),
+                  bg: useColorModeValue('gray.700', 'gray.800'),
                 }}
               >
                 Sign up
@@ -88,7 +90,16 @@ export default function SignupCard() {
             </Stack>
             <Stack pt={6}>
               <Text align={'center'}>
-                Already a user? <Link color={'blue.400'}>Login</Link>
+                Already a user?{' '}
+                <Link
+                  color={'blue.400'}
+                  onClick={() => {
+                    // onclick change the auth state to signup
+                    setAuthScreen('login')
+                  }}
+                >
+                  Login
+                </Link>
               </Text>
             </Stack>
           </Stack>
