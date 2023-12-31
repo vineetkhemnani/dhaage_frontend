@@ -9,7 +9,9 @@ export default defineConfig({
     // get rid of CORS errors
     proxy: {
       '/api': {
-        target: 'http://localhost:5000',
+        // uncomment below when in local environment
+        // target:'http://localhost:5000' 
+        target: 'https://dhaage-backend.vercel.app/',
         changeOrigin: true,
         secure: false,
       },
