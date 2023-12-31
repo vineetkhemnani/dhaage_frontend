@@ -12,7 +12,7 @@ export default defineConfig({
         // uncomment below when in local environment
         // target:'http://localhost:5000' ,
         // target: 'https://dhaage-backend.vercel.app/',
-        target: 'https://threads-backend-2lcn.onrender.com/',
+        target: 'https://threads-backend-2lcn.onrender.com',
         changeOrigin: true,
         secure: false,
       },
