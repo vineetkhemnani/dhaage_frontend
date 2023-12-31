@@ -7,10 +7,11 @@ const LogoutButton = () => {
   const { colorMode } = useColorMode()
   // set the global user recoil state (similiar to setState in useState())
   const setUser = useSetRecoilState(userAtom)
+
   // custom hook to handle toasts
   const showToast = useShowToast()
-  const handleLogout = async () => {
 
+  const handleLogout = async () => {
     try {
       // fetch
       const res = await fetch('/api/users/logout', {
@@ -31,7 +32,11 @@ const LogoutButton = () => {
 
       // setting the recoil atom state to null
       setUser(null)
+
+      // show successfully logged out toast
+      showToast('Logged out', data.message, 'info')
     } catch (error) {
+      showToast('Error', error, 'error')
       console.log(error)
     }
   }
@@ -43,7 +48,7 @@ const LogoutButton = () => {
         _hover={{
           bg: colorMode === 'dark' ? 'whiteAlpha.300' : 'gray.500',
         }}
-        onClick={()=>handleLogout()}
+        onClick={() => handleLogout()}
       >
         Logout
       </Button>

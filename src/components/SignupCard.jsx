@@ -64,12 +64,13 @@ export default function SignupCard() {
       // if no error till here set user in localStorage
       // setItem in localStorage with key "user-threads":"data fetched from backend response"
       localStorage.setItem('user-threads', JSON.stringify(data))
+      // set global user object to the data added
       setUser(data)
 
       //  show success toast
       showToast('Success', 'Successfully created user', 'success')
     } catch (error) {
-      console.log(error)
+      showToast('Error', error, 'error')
     }
   }
   return (
