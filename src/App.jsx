@@ -8,6 +8,7 @@ import AuthPage from './pages/AuthPage'
 import { useRecoilValue } from 'recoil'
 import userAtom from './atoms/userAtom'
 import LogoutButton from './components/LogoutButton'
+import UpdateProfilePage from './pages/UpdateProfilePage'
 
 function App() {
   const user = useRecoilValue(userAtom)
@@ -24,6 +25,11 @@ function App() {
           path="/auth"
           // if no user redirect to auth page or login page else redirect to root route
           element={!user ? <AuthPage /> : <Navigate to={'/'} />}
+        />
+        <Route
+          path="/update"
+          // if no user redirect to auth page or login page else go to update route
+          element={user ? <UpdateProfilePage /> : <Navigate to={'/auth'} />}
         />
         <Route path="/:username" element={<UserPage />} />
         <Route path="/:username/post/:pid" element={<PostPage />} />

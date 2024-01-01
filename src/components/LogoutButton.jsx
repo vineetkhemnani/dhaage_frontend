@@ -2,6 +2,7 @@ import { Button, Flex, useColorMode } from '@chakra-ui/react'
 import { useSetRecoilState } from 'recoil'
 import userAtom from '../atoms/userAtom'
 import useShowToast from '../hooks/useShowToast'
+import { FiLogOut } from 'react-icons/fi'
 
 const LogoutButton = () => {
   const { colorMode } = useColorMode()
@@ -21,7 +22,7 @@ const LogoutButton = () => {
         },
       })
       const data = await res.json()
-      console.log(data)
+      // console.log(data)
       if (data.error) {
         showToast('Error', data.error, 'error')
         return
@@ -50,7 +51,7 @@ const LogoutButton = () => {
         }}
         onClick={() => handleLogout()}
       >
-        Logout
+        <FiLogOut size={20}/>
       </Button>
     </Flex>
   )
