@@ -17,10 +17,12 @@ function App() {
       <Routes>
         <Route
           path="/"
+          // if user in localStorage go to home page else redirect to home route
           element={user ? <HomePage /> : <Navigate to="/auth" />}
         />
         <Route
           path="/auth"
+          // if no user redirect to auth page or login page else redirect to root route
           element={!user ? <AuthPage /> : <Navigate to={'/'} />}
         />
         <Route path="/:username" element={<UserPage />} />
