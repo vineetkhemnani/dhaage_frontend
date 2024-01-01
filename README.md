@@ -60,3 +60,49 @@ const theme = extendTheme({config, styles, colors})
     </ChakraProvider>
   </React.StrictMode>
 ```
+
+
+## Using Recoil for state management
+- To use Recoil, we need to install it using ```npm i recoil```
+
+### Setting up Recoil
+- To set up recoil for the project, we need to wrap the part of the project which we need recoil to work in ```<RecoilRoot></RecoilRoot>```
+- Example:-
+```
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <RecoilRoot>
+      <BrowserRouter>
+        <ChakraProvider theme={theme}>
+          <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+          <App />
+        </ChakraProvider>
+      </BrowserRouter>
+    </RecoilRoot>
+  </React.StrictMode>
+)
+```
+
+### Atoms in Recoil
+- Recoil uses atoms for global state management
+- Each atom can be regarded as a state (similar to a slice in redux)
+- An atom may be represented as:-
+```
+import { atom } from "recoil";
+
+const userAtom = atom({
+    key:'userAtom',
+    default:JSON.parse(localStorage.getItem('user-threads'))
+})
+
+export default userAtom
+```
+- Here key represents name of the atom and default is the default value of the state
+- We can access the value of each atom using ```const authScreenState = useRecoilValue(authScreenAtom)```
+
+### Setting the value of atoms/states
+- We can use the ```useSetRecoilState()``` provided by recoil to set the value of the atom
+- It works similar to the function provided by useState()
+```
+const setUser = useSetRecoilState(userAtom)
+```
