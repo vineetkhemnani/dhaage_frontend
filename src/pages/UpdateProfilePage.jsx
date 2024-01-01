@@ -15,6 +15,7 @@ import { useRecoilState } from 'recoil'
 import userAtom from '../atoms/userAtom'
 import usePreviewImg from '../hooks/usePreviewImg'
 import useShowToast from '../hooks/useShowToast'
+import { useNavigate } from 'react-router-dom'
 
 export default function UpdateProfilePage() {
   const [user, setUser] = useRecoilState(userAtom)
@@ -32,15 +33,29 @@ export default function UpdateProfilePage() {
 
   const { handleImageChange, imgUrl } = usePreviewImg()
 
+  const navigate = useNavigate()
+
   // handle cancel button
-  const handleCancel=()=>{
+  const handleCancel = (e) => {
     try {
-        
+      if (updating) {
+        e.preventDefault()
+        // Optionally, you can show a message to the user that the cancel action is disabled during the update.
+        showToast(
+          'Warning',
+          'Cancel action is disabled during update',
+          'warning'
+        )
+      } else {
+        // Handle the cancel action when not updating
+        // For example, you may want to navigate back or perform some other action.
+        navigate('/')
+      }
     } catch (error) {
-        
+      showToast('Error', error, 'error')
     }
   }
-  
+
   // handle submit form
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -168,7 +183,9 @@ export default function UpdateProfilePage() {
               w="full"
               _hover={{
                 bg: 'red.500',
-              }}  
+              }}
+              onClick={handleCancel}
+              isDisabled={updating}
             >
               Cancel
             </Button>
