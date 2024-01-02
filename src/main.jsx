@@ -32,6 +32,8 @@ const colors = {
 // extendTheme and pass it to ChakraProvider so we can use it globally
 const theme = extendTheme({ config, styles, colors })
 ReactDOM.createRoot(document.getElementById('root')).render(
+  //React.StrictMode renders everything twice on initial render in development mode
+  // in production it will render everything normally (once on initial render)
   <React.StrictMode>
     <RecoilRoot>
       <BrowserRouter>

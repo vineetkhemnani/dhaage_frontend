@@ -49,7 +49,7 @@ export default function UpdateProfilePage() {
       } else {
         // Handle the cancel action when not updating
         // For example, you may want to navigate back or perform some other action.
-        navigate('/')
+        navigate(`/${user.username}`)
       }
     } catch (error) {
       showToast('Error', error, 'error')
