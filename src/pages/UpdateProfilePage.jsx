@@ -31,6 +31,7 @@ export default function UpdateProfilePage() {
 
   const showToast = useShowToast()
 
+  // custom hook to preview image when we select a file from file explorer
   const { handleImageChange, imgUrl } = usePreviewImg()
 
   const navigate = useNavigate()
@@ -59,6 +60,7 @@ export default function UpdateProfilePage() {
   // handle submit form
   const handleSubmit = async (e) => {
     e.preventDefault()
+    // if updating backend cant submit again and exit out of function
     if (updating) return
     setUpdating(true)
     try {
