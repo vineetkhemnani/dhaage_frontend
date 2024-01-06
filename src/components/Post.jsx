@@ -63,8 +63,8 @@ const Post = ({ post, postedBy }) => {
     e.preventDefault()
     try {
       if (!window.confirm('Are you sure you want to delete this post?')) return
-      const res = await fetch(`/api/posts/${post._id}`,{
-        method:'DELETE'
+      const res = await fetch(`/api/posts/${post._id}`, {
+        method: 'DELETE',
       })
       const data = await res.json()
       if (data.error) {
@@ -72,7 +72,7 @@ const Post = ({ post, postedBy }) => {
         return
       }
       // console.log(data)
-      showToast('Success',"Post deleted successfully", 'success')
+      showToast('Success', 'Post deleted successfully', 'success')
     } catch (error) {
       showToast('Error', data.error, 'error')
       setUser(null)
@@ -80,7 +80,7 @@ const Post = ({ post, postedBy }) => {
   }
   if (!user) return null
   return (
-    <Link to={`/${user?.username}/post/${post._id}}`}>
+    <Link to={`/${user?.username}/post/${post._id}`}>
       <Flex gap={3} mb={4} py={5}>
         <Flex flexDirection={'column'} alignItems={'center'}>
           {/* user picture alongside post */}
