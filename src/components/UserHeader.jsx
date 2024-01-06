@@ -68,7 +68,7 @@ const UserHeader = ({ user }) => {
         user.followers.pop()
       } else {
         showToast('Success', `You Followed ${user.name}`, 'success')
-        user.followers.push(currentUser._id)
+        user.followers.push(currentUser?._id)
       }
 
       // change the state of follow-unfollow button

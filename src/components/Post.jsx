@@ -12,15 +12,21 @@ import {
   useColorMode,
 } from '@chakra-ui/react'
 import { BsThreeDots } from 'react-icons/bs'
+import { DeleteIcon } from '@chakra-ui/icons'
 import { Link, useNavigate } from 'react-router-dom'
 import Actions from './Actions'
 import { useEffect, useState } from 'react'
 import useShowToast from '../hooks/useShowToast'
-import {formatDistanceToNow} from 'date-fns'
+import { formatDistanceToNow } from 'date-fns'
+import { useRecoilValue } from 'recoil'
+import userAtom from '../atoms/userAtom'
 const Post = ({ post, postedBy }) => {
   const { colorMode, toggleColorMode } = useColorMode()
   // state for like/heart button
   const [liked, setLiked] = useState(false)
+
+  // get current user from recoil
+  const currentUser = useRecoilValue(userAtom)
 
   //   save user fetched using getUser method
   const [user, setUser] = useState(null)
@@ -51,6 +57,27 @@ const Post = ({ post, postedBy }) => {
     }
     getUser()
   }, [postedBy])
+
+  // delete posts method
+  const handleDeletePost = async (e) => {
+    e.preventDefault()
+    try {
+      if (!window.confirm('Are you sure you want to delete this post?')) return
+      const res = await fetch(`/api/posts/${post._id}`,{
+        method:'DELETE'
+      })
+      const data = await res.json()
+      if (data.error) {
+        showToast('Error', data.error, 'error')
+        return
+      }
+      // console.log(data)
+      showToast('Success',"Post deleted successfully", 'success')
+    } catch (error) {
+      showToast('Error', data.error, 'error')
+      setUser(null)
+    }
+  }
   if (!user) return null
   return (
     <Link to={`/${user?.username}/post/${post._id}}`}>
@@ -135,6 +162,14 @@ const Post = ({ post, postedBy }) => {
               >
                 {formatDistanceToNow(new Date(post.createdAt))} ago
               </Text>
+
+              {currentUser?._id === user._id && (
+                <DeleteIcon
+                  size={20}
+                  _hover={{ color: 'red.600' }}
+                  onClick={handleDeletePost}
+                />
+              )}
             </Flex>
           </Flex>
 
@@ -152,10 +187,8 @@ const Post = ({ post, postedBy }) => {
 
           <Flex gap={3} my={1}>
             {/* like,comment,share buttons */}
-            <Actions post={post}/>
+            <Actions post={post} />
           </Flex>
-
-         
         </Flex>
       </Flex>
     </Link>
