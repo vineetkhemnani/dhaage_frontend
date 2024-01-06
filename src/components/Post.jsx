@@ -41,7 +41,7 @@ const Post = ({ post, postedBy }) => {
           showToast('Error', data.error, 'error')
           return
         }
-        console.log(data)
+        // console.log(data)
         // if no errors set user to data
         setUser(data)
       } catch (error) {
@@ -152,18 +152,10 @@ const Post = ({ post, postedBy }) => {
 
           <Flex gap={3} my={1}>
             {/* like,comment,share buttons */}
-            <Actions liked={liked} setLiked={setLiked} />
+            <Actions post={post}/>
           </Flex>
 
-          <Flex gap={2} alignItems={'center'}>
-            <Text color={'gray.light'} fontSize={'sm'}>
-              {post.replies.length} Replies
-            </Text>
-            <Box w={0.5} h={0.5} borderRadius={'full'} bg={'gray.light'}></Box>
-            <Text color={'gray.light'} fontSize={'sm'}>
-              {post.likes.length} likes
-            </Text>
-          </Flex>
+         
         </Flex>
       </Flex>
     </Link>
