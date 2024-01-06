@@ -1,4 +1,19 @@
-import { Box, Flex, Text } from '@chakra-ui/react'
+import {
+  Box,
+  Flex,
+  Text,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+  useDisclosure,
+  FormControl,
+  Input,
+} from '@chakra-ui/react'
 import { useState } from 'react'
 import { useRecoilValue } from 'recoil'
 import userAtom from '../atoms/userAtom'
@@ -8,11 +23,11 @@ import useShowToast from '../hooks/useShowToast'
 // 2. comment
 // 3. share
 const Actions = ({ post: post_ }) => {
+  // hook derived from modal
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
   // get current user if present
   const user = useRecoilValue(userAtom)
-
-  // show custom toasts
-  const showToast = useShowToast()
 
   // post intially has a state derived from the previous component
   const [post, setPost] = useState(post_)
@@ -23,10 +38,19 @@ const Actions = ({ post: post_ }) => {
   // loading/liking state for sending the fetch request so that it does not send it again
   const [isLiking, setIsLiking] = useState(false)
 
+  // loading/replying state for sending the fetch request so that it does not send it again
+  const [isReplying, setIsReplying] = useState(false)
+
+  // state to store replies
+  const [reply, setReply] = useState('')
+
+  // show custom toasts
+  const showToast = useShowToast()
+
   // function to handle like unlike
   const handleLikeUnlike = async () => {
     if (!user)
-      showToast('Error', 'You must be logged in to like a post', 'error')
+      return showToast('Error', 'You must be logged in to like a post', 'error')
 
     // if isLiking means request has not yet completed return out of the function
     if (isLiking) return
@@ -45,7 +69,6 @@ const Actions = ({ post: post_ }) => {
         showToast('Error', data.error, 'error')
         return
       }
-
       if (!liked) {
         // like the post by adding the id of the current user to the post likes array
         // by spreading the post object properties inside setPost and concatenating user._id
@@ -53,7 +76,10 @@ const Actions = ({ post: post_ }) => {
         setPost({ ...post, likes: [...post.likes, user._id] })
       } else {
         // while unliking filter the id from the array
-        setPost({ ...post, likes: post?.likes?.filter((id) => id !== user._id) })
+        setPost({
+          ...post,
+          likes: post?.likes?.filter((id) => id !== user._id),
+        })
       }
       // console.log(data)
 
@@ -66,6 +92,41 @@ const Actions = ({ post: post_ }) => {
       setIsLiking(false)
     }
   }
+
+  // function to handle replies
+  const handleReplies = async () => {
+    // console.log(reply)
+    if (!user)
+      return showToast('Error', 'You must be logged in to like a post', 'error')
+
+    if (isReplying) return
+    setIsReplying(true)
+    try {
+      const res = await fetch(`/api/posts/reply/${post._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: reply }),
+      })
+      const data = await res.json()
+
+      if (data.error) {
+        showToast('Error', data.error, 'error')
+        return
+      }
+      setPost({ ...post, replies: [...post.replies, user._id] })
+      showToast('Success', 'Reply posted successfully', 'success')
+      console.log(data)
+      onClose()
+      setReply('')
+    } catch (error) {
+      showToast('Error', error.message, 'error')
+    } finally {
+      setIsReplying(false)
+    }
+  }
+
   return (
     <Flex flexDirection="column">
       <Flex gap={3} my={2} onClick={(e) => e.preventDefault()}>
@@ -86,7 +147,7 @@ const Actions = ({ post: post_ }) => {
             strokeWidth="2"
           ></path>
         </svg>
-        <CommentSVG />
+        <CommentSVG openModal={onOpen} />
 
         <RepostSVG />
 
@@ -102,6 +163,42 @@ const Actions = ({ post: post_ }) => {
           {post?.likes.length} likes
         </Text>
       </Flex>
+
+      <Modal
+        isOpen={isOpen}
+        onClose={() => {
+          onClose()
+          setReply('')
+        }}
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader />
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            <FormControl>
+              <Input
+                placeholder="Reply goes here"
+                value={reply}
+                onChange={(e) => setReply(e.target.value)}
+              />
+            </FormControl>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button
+              loadingText="Replying"
+              colorScheme="blue"
+              size={'sm'}
+              mr={3}
+              onClick={handleReplies}
+              isLoading={isReplying}
+            >
+              Reply
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Flex>
   )
 }
@@ -160,7 +257,7 @@ const ShareSVG = () => {
   )
 }
 
-const CommentSVG = () => {
+const CommentSVG = ({ openModal }) => {
   return (
     <svg
       aria-label="Comment"
@@ -170,6 +267,7 @@ const CommentSVG = () => {
       role="img"
       viewBox="0 0 24 24"
       width="20"
+      onClick={openModal}
     >
       <title>Comment</title>
       <path
