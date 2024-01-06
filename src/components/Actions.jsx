@@ -18,7 +18,7 @@ const Actions = ({ post: post_ }) => {
   const [post, setPost] = useState(post_)
 
   // state to toggle like-unlike
-  const [liked, setLiked] = useState(post_.likes.includes(user?._id))
+  const [liked, setLiked] = useState(post_?.likes?.includes(user?._id))
 
   // loading/liking state for sending the fetch request so that it does not send it again
   const [isLiking, setIsLiking] = useState(false)
@@ -53,7 +53,7 @@ const Actions = ({ post: post_ }) => {
         setPost({ ...post, likes: [...post.likes, user._id] })
       } else {
         // while unliking filter the id from the array
-        setPost({ ...post, likes: post.likes.filter((id) => id !== user._id) })
+        setPost({ ...post, likes: post?.likes?.filter((id) => id !== user._id) })
       }
       // console.log(data)
 
