@@ -38,7 +38,7 @@ const UserHeader = ({ user }) => {
   const currentUser = useRecoilValue(userAtom) // user that is logged in
 
   const [following, setFollowing] = useState(
-    user.followers.includes(currentUser._id)
+    user?.followers?.includes(currentUser?._id)
   )
   // handle follow-unfollow user clicks
   const handleFollowUnfollow = async () => {
@@ -144,13 +144,13 @@ const UserHeader = ({ user }) => {
       <Text>{user.bio}</Text>
 
       {/* if current user visits own user profile */}
-      {currentUser._id === user._id && (
+      {currentUser?._id === user._id && (
         <RouterLink to="/update">
           <Button size={'sm'}>Update Profile</Button>
         </RouterLink>
       )}
       {/* if current user visits other user profile => show follow-unfollow button */}
-      {currentUser._id !== user._id && (
+      {currentUser?._id !== user._id && (
         <Button size={'sm'} onClick={handleFollowUnfollow} isLoading={updating}>
           {following ? 'Unfollow' : 'Follow'}
         </Button>
@@ -217,3 +217,7 @@ const UserHeader = ({ user }) => {
   )
 }
 export default UserHeader
+
+/**
+ * 
+ */
