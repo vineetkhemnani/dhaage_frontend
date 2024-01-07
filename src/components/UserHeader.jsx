@@ -13,6 +13,7 @@ import {
   VStack,
   useColorMode,
   useToast,
+  
 } from '@chakra-ui/react'
 import { Link as RouterLink } from 'react-router-dom'
 import { BsInstagram } from 'react-icons/bs'
@@ -47,7 +48,7 @@ const UserHeader = ({ user }) => {
       showToast('Error', 'Please login to follow', 'error')
       return
     }
-    if(updating) return
+    if (updating) return
     setUpdating(true)
     try {
       const res = await fetch(`/api/users/follow/${user._id}`, {
@@ -97,101 +98,118 @@ const UserHeader = ({ user }) => {
     })
   }
   return (
-    <VStack gap={3} alignItems={'start'}>
-      <Flex justifyContent={'space-between'} w={'full'}>
-        <Box>
-          <Text fontSize={'2xl'} fontWeight={'bold'}>
-            {user.name}
-          </Text>
-          <Flex gap={2} alignItems={'center'}>
-            <Text fontSize={'sm'}>{user.username}</Text>
-            <Text
-              fontSize={'xs'}
-              bg={'gray.dark'}
-              color={'gray.light'}
-              p={1}
-              borderRadius={'full'}
-            >
-              threads.net
+    <>
+      <VStack gap={3} alignItems={'start'}>
+        <Flex justifyContent={'space-between'} w={'full'}>
+          <Box>
+            <Text fontSize={'2xl'} fontWeight={'bold'}>
+              {user.name}
             </Text>
+            <Flex gap={2} alignItems={'center'}>
+              <Text fontSize={'sm'}>{user.username}</Text>
+              <Text
+                fontSize={'xs'}
+                bg={'gray.dark'}
+                color={'gray.light'}
+                p={1}
+                borderRadius={'full'}
+              >
+                threads.net
+              </Text>
+            </Flex>
+          </Box>
+          <Box>
+            {user.profilePicture && (
+              <Avatar
+                name={user.name}
+                src={user.profilePicture}
+                size={{
+                  // media queries for avatar
+                  base: 'md',
+                  md: 'xl',
+                }}
+              />
+            )}
+            {!user.profilePicture && (
+              <Avatar
+                name={user.name}
+                src="http://bit.ly/broken-link"
+                size={{
+                  // media queries for avatar
+                  base: 'md',
+                  md: 'xl',
+                }}
+              />
+            )}
+          </Box>
+        </Flex>
+        <Text>{user.bio}</Text>
+
+        {/* if current user visits own user profile */}
+        {currentUser?._id === user._id && (
+          <RouterLink to="/update">
+            <Button
+              size={'sm'}
+              bg={colorMode === 'dark' ? 'whiteAlpha.100' : 'gray.400'}
+              _hover={{
+                bg: colorMode === 'dark' ? 'whiteAlpha.300' : 'gray.500',
+              }}
+            >
+              Update Profile
+            </Button>
+          </RouterLink>
+        )}
+        {/* if current user visits other user profile => show follow-unfollow button */}
+        {currentUser?._id !== user._id && (
+          <Button
+            size={'sm'}
+            bg={colorMode === 'dark' ? 'whiteAlpha.100' : 'gray.400'}
+            _hover={{
+              bg: colorMode === 'dark' ? 'whiteAlpha.300' : 'gray.500',
+            }}
+            onClick={handleFollowUnfollow}
+            isLoading={updating}
+          >
+            {following ? 'Unfollow' : 'Follow'}
+          </Button>
+        )}
+
+        <Flex w={'full'} justifyContent={'space-between'}>
+          <Flex gap={2} alignItems={'center'}>
+            <Text color={'gray.light'}>{user.followers.length} followers</Text>
+            <Box w={1} h={1} bg={'gray.light'} borderRadius={'full'}></Box>
+            <Text color={'gray.light'}>{user.following.length} following</Text>
+            <Box w={1} h={1} bg={'gray.light'} borderRadius={'full'}></Box>
+            <Link color={'gray.light'}>instagram.com</Link>
           </Flex>
-        </Box>
-        <Box>
-          {user.profilePicture && (
-            <Avatar
-              name={user.name}
-              src={user.profilePicture}
-              size={{
-                // media queries for avatar
-                base: 'md',
-                md: 'xl',
-              }}
-            />
-          )}
-          {!user.profilePicture && (
-            <Avatar
-              name={user.name}
-              src="http://bit.ly/broken-link"
-              size={{
-                // media queries for avatar
-                base: 'md',
-                md: 'xl',
-              }}
-            />
-          )}
-        </Box>
-      </Flex>
-      <Text>{user.bio}</Text>
-
-      {/* if current user visits own user profile */}
-      {currentUser?._id === user._id && (
-        <RouterLink to="/update">
-          <Button size={'sm'}>Update Profile</Button>
-        </RouterLink>
-      )}
-      {/* if current user visits other user profile => show follow-unfollow button */}
-      {currentUser?._id !== user._id && (
-        <Button size={'sm'} onClick={handleFollowUnfollow} isLoading={updating}>
-          {following ? 'Unfollow' : 'Follow'}
-        </Button>
-      )}
-
-      <Flex w={'full'} justifyContent={'space-between'}>
-        <Flex gap={2} alignItems={'center'}>
-          <Text color={'gray.light'}>{user.followers.length} followers</Text>
-          <Box w={1} h={1} bg={'gray.light'} borderRadius={'full'}></Box>
-          <Text color={'gray.light'}>{user.following.length} following</Text>
-          <Box w={1} h={1} bg={'gray.light'} borderRadius={'full'}></Box>
-          <Link color={'gray.light'}>instagram.com</Link>
+          <Flex>
+            <Box className="icon-container">
+              <BsInstagram size={24} cursor={'pointer'} />
+            </Box>
+            <Box className="icon-container">
+              <Menu>
+                <MenuButton>
+                  {/* copy link menu */}
+                  <CgMoreO size={24} cursor={'pointer'} />
+                </MenuButton>
+                <Portal>
+                  <MenuList bg={colorMode == 'dark' ? 'gray.dark' : 'white'}>
+                    <MenuItem
+                      bg={colorMode == 'dark' ? 'gray.dark' : 'white'}
+                      onClick={copyURL}
+                    >
+                      Copy Link
+                    </MenuItem>
+                  </MenuList>
+                </Portal>
+              </Menu>
+            </Box>
+          </Flex>
         </Flex>
-        <Flex>
-          <Box className="icon-container">
-            <BsInstagram size={24} cursor={'pointer'} />
-          </Box>
-          <Box className="icon-container">
-            <Menu>
-              <MenuButton>
-                {/* copy link menu */}
-                <CgMoreO size={24} cursor={'pointer'} />
-              </MenuButton>
-              <Portal>
-                <MenuList bg={colorMode == 'dark' ? 'gray.dark' : 'white'}>
-                  <MenuItem
-                    bg={colorMode == 'dark' ? 'gray.dark' : 'white'}
-                    onClick={copyURL}
-                  >
-                    Copy Link
-                  </MenuItem>
-                </MenuList>
-              </Portal>
-            </Menu>
-          </Box>
-        </Flex>
-      </Flex>
 
-      {/* Threads/Replies flex */}
-      <Flex w={'full'}>
-        <Flex
+        {/* Threads/Replies flex */}
+        <Flex w={'full'}>
+          {/* <Flex
           flex={1}
           borderBottom={
             colorMode === 'dark' ? '1.5px solid white' : '2px solid black'
@@ -211,13 +229,14 @@ const UserHeader = ({ user }) => {
           cursor={'pointer'}
         >
           <Text fontWeight={'bold'}>Replies</Text>
+        </Flex> */}
         </Flex>
-      </Flex>
-    </VStack>
+      </VStack>
+    </>
   )
 }
 export default UserHeader
 
 /**
- * 
+ *
  */

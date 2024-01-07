@@ -3,7 +3,17 @@ import UserHeader from '../components/UserHeader'
 import Post from '../components/Post'
 import { useParams } from 'react-router-dom'
 import useShowToast from '../hooks/useShowToast'
-import { Flex, Spinner } from '@chakra-ui/react'
+import {
+  Flex,
+  Spinner,
+  Text,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+  TabIndicator,
+} from '@chakra-ui/react'
 import { useGetUserProfile } from '../hooks/useGetUserProfile'
 
 const UserPage = () => {
@@ -59,17 +69,48 @@ const UserPage = () => {
     <>
       <UserHeader user={user} />
 
-      {!fetchingPosts && posts.length === 0 && <h1>User has no posts</h1>}
-      {fetchingPosts && (
-        <Flex justifyContent={'center'} my={12}>
-          <Spinner size={'xl'} />
-        </Flex>
-      )}
+      {/* tab panels */}
+      <Tabs isFitted variant="enclosed">
+        <TabList>
+          <Tab _selected={{ fontWeight: 'bold' }}>
+            <Text>Threads</Text>
+          </Tab>
+          <Tab _selected={{ fontWeight: 'bold' }}>
+            <Text>Replies</Text>
+          </Tab>
+        </TabList>
+        <TabIndicator
+          mt="-1.5px"
+          height="2px"
+          bg="blue.500"
+          borderRadius="1px"
+        />
+        <TabPanels>
 
-      {posts.map((post) => (
-        <Post key={post._id} post={post} postedBy={post.postedBy} />
-      ))}
+          <TabPanel>
+            {/* threads tab contents */}
+            {!fetchingPosts && posts.length === 0 && <h1>User has no posts</h1>}
+            {fetchingPosts && (
+              <Flex justifyContent={'center'} my={12}>
+                <Spinner size={'xl'} />
+              </Flex>
+            )}
+
+            {posts.map((post) => (
+              <Post key={post._id} post={post} postedBy={post.postedBy} />
+            ))}
+          </TabPanel>
+
+
+          <TabPanel>
+            <p>Replies coming soon!</p>
+          </TabPanel>
+
+          
+        </TabPanels>
+      </Tabs>
     </>
   )
 }
+
 export default UserPage
