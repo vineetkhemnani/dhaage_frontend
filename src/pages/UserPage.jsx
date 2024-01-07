@@ -4,40 +4,16 @@ import Post from '../components/Post'
 import { useParams } from 'react-router-dom'
 import useShowToast from '../hooks/useShowToast'
 import { Flex, Spinner } from '@chakra-ui/react'
+import { useGetUserProfile } from '../hooks/useGetUserProfile'
 
 const UserPage = () => {
-  // store the user state
-  const [user, setUser] = useState(null)
+  // custom hook defined to get user and user loading state
+  const { user, loading } = useGetUserProfile()
 
   // fetch username from params
   const { username } = useParams()
 
   const showToast = useShowToast()
-
-  // get user using fetch request
-  const getUser = async () => {
-    try {
-      const res = await fetch(`/api/users/profile/${username}`)
-      const data = await res.json()
-      console.log(data)
-
-      if (data.error) {
-        showToast('Error', data.error, 'error')
-        return
-      }
-
-      setUser(data)
-    } catch (error) {
-      // console.log(error)
-      showToast('Error', error, 'error')
-    } finally {
-      // whether user found or not, setLoading state to false finally
-      setLoading(false)
-    }
-  }
-
-  // loading state to check for user
-  const [loading, setLoading] = useState(true)
 
   // store the posts
   const [posts, setPosts] = useState([])
@@ -46,8 +22,6 @@ const UserPage = () => {
   const [fetchingPosts, setFetchingPosts] = useState(true)
 
   useEffect(() => {
-    // call the getUser() whenever username changes
-    getUser()
     getPosts()
   }, [username, useShowToast])
 
@@ -93,7 +67,7 @@ const UserPage = () => {
       )}
 
       {posts.map((post) => (
-        <Post key={post._id} post={post} postedBy={post.postedBy}/>
+        <Post key={post._id} post={post} postedBy={post.postedBy} />
       ))}
     </>
   )
