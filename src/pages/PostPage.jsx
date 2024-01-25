@@ -89,7 +89,7 @@ const handleDeletePost = async () => {
     )
   }
 
-  if (!post) return null
+  // if (!post) return null
   return (
     <>
       <Flex>
@@ -111,7 +111,7 @@ const handleDeletePost = async () => {
             textAlign={'right'}
             color={'gray.light'}
           >
-            {formatDistanceToNow(new Date(post.createdAt))} ago
+            {formatDistanceToNow(new Date(post?.createdAt))} ago
           </Text>
           <Box
             className="icon-container"
@@ -150,8 +150,8 @@ const handleDeletePost = async () => {
         </Flex>
       </Flex>
 
-      <Text my={3}>{post.text}</Text>
-      {post.img && (
+      <Text my={3}>{post?.text}</Text>
+      {post?.img && (
         <Box
           borderRadius={6}
           overflow={'hidden'}
@@ -159,7 +159,7 @@ const handleDeletePost = async () => {
           borderColor={'gray.light'}
           w={'-webkit-fit-content'}
         >
-          <Image src={post.img} />
+          <Image src={post?.img} />
         </Box>
       )}
       {/* post actions */}
@@ -185,11 +185,11 @@ const handleDeletePost = async () => {
         </>
       )}
       {/* comments/replies on post */}
-      {post.replies.map((reply) => (
+      {post?.replies.map((reply) => (
         <Comment
           key={reply._id}
           reply={reply}
-          lastReply={reply._id === post.replies[post.replies.length - 1]._id}
+          lastReply={reply._id === post?.replies[post?.replies.length - 1]._id}
         />
       ))}
     </>

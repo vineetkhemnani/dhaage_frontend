@@ -46,11 +46,11 @@ const HomePage = () => {
         </Flex>
       )}
       {/* not loading and no users followed */}
-      {!loading && posts.length === 0 && (
+      {!loading && posts?.length === 0 && (
         <h1>Follow some users to see the feed</h1>
       )}
       {/* if posts array has items */}
-      {posts.map((post)=>(
+      {posts?.map((post)=>(
         <Post key={post._id} post={post} postedBy={post.postedBy}/>
         )
       )}
