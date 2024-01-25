@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://threads-copy-backend.vercel.app/api/$1"
+    },
+    {
+      "source": "/:any*",
+      "destination": "/index.html"
+    }
+  ]
+}
