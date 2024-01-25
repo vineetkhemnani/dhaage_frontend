@@ -13,7 +13,6 @@ import {
   VStack,
   useColorMode,
   useToast,
-  
 } from '@chakra-ui/react'
 import { Link as RouterLink } from 'react-router-dom'
 import { BsInstagram } from 'react-icons/bs'
@@ -29,6 +28,9 @@ const UserHeader = ({ user }) => {
 
   // toast shown when URL copied to clipboard
   const toast = useToast()
+
+  // check mobile screen or not
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
 
   // custom hook to display customized toast messages easily
   const showToast = useShowToast()
@@ -97,6 +99,9 @@ const UserHeader = ({ user }) => {
       })
     })
   }
+
+  // check mobile screen or not
+
   return (
     <>
       <VStack gap={3} alignItems={'start'}>
@@ -179,8 +184,12 @@ const UserHeader = ({ user }) => {
             <Text color={'gray.light'}>{user.followers.length} followers</Text>
             <Box w={1} h={1} bg={'gray.light'} borderRadius={'full'}></Box>
             <Text color={'gray.light'}>{user.following.length} following</Text>
-            <Box w={1} h={1} bg={'gray.light'} borderRadius={'full'}></Box>
-            <Link color={'gray.light'}>instagram.com</Link>
+            {!isMobile && (
+              <>
+                <Box w={1} h={1} bg={'gray.light'} borderRadius={'full'}></Box>
+                <Link color={'gray.light'}>instagram.com</Link>
+              </>
+            )}
           </Flex>
           <Flex>
             <Box className="icon-container">
