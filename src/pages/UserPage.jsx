@@ -15,6 +15,8 @@ import {
   TabIndicator,
 } from '@chakra-ui/react'
 import { useGetUserProfile } from '../hooks/useGetUserProfile'
+import { useRecoilState } from 'recoil'
+import postsAtom from '../atoms/postsAtom'
 
 const UserPage = () => {
   // custom hook defined to get user and user loading state
@@ -26,14 +28,15 @@ const UserPage = () => {
   const showToast = useShowToast()
 
   // store the posts
-  const [posts, setPosts] = useState([])
+  const [posts, setPosts] = useRecoilState(postsAtom)
 
   // loading state for fetching posts
   const [fetchingPosts, setFetchingPosts] = useState(true)
 
   useEffect(() => {
     getPosts()
-  }, [username, useShowToast])
+  }, [username, useShowToast,setPosts])
+  console.log("posts is here and it is recoil state",posts)
 
   const getPosts = async () => {
     try {

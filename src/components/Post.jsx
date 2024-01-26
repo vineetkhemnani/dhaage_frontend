@@ -18,8 +18,9 @@ import Actions from './Actions'
 import { useEffect, useState } from 'react'
 import useShowToast from '../hooks/useShowToast'
 import { formatDistanceToNow } from 'date-fns'
-import { useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import userAtom from '../atoms/userAtom'
+import postsAtom from '../atoms/postsAtom'
 const Post = ({ post, postedBy }) => {
   const { colorMode, toggleColorMode } = useColorMode()
   // state for like/heart button
@@ -27,6 +28,9 @@ const Post = ({ post, postedBy }) => {
 
   // get current user from recoil
   const currentUser = useRecoilValue(userAtom)
+
+  // global posts atom
+  const [posts, setPosts] = useRecoilState(postsAtom)
 
   //   save user fetched using getUser method
   const [user, setUser] = useState(null)
@@ -73,6 +77,7 @@ const Post = ({ post, postedBy }) => {
       }
       // console.log(data)
       showToast('Success', 'Post deleted successfully', 'success')
+      setPosts(posts.filter((p) => p._id !== post._id))
     } catch (error) {
       showToast('Error', data.error, 'error')
       setUser(null)

@@ -23,9 +23,10 @@ import {
 import { useRef, useState } from 'react'
 import usePreviewImg from '../hooks/usePreviewImg'
 import { BsFillImageFill } from 'react-icons/bs'
-import { useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import userAtom from '../atoms/userAtom'
 import useShowToast from '../hooks/useShowToast'
+import postsAtom from '../atoms/postsAtom'
 
 // max character allowed per post
 const MAX_CHAR = 500
@@ -54,6 +55,8 @@ const CreatePost = () => {
 
   //   loader if posting
   const [posting, setPosting] = useState(false)
+
+  const [posts,setPosts]=useRecoilState(postsAtom)
 
   //   handle number of characters left to post
   const handleTextChange = (e) => {
@@ -94,6 +97,9 @@ const CreatePost = () => {
       //   show success toast
       showToast('Success', 'Post created successfully', 'success')
 
+      // update posts on frontend
+      setPosts([data,...posts])
+
       //   close the modal
       onClose()
 
@@ -116,6 +122,7 @@ const CreatePost = () => {
         leftIcon={<AddIcon />}
         bg={useColorModeValue('gray.300', 'gray.dark')}
         onClick={onOpen}
+        size={{base:'sm', sm:'md'}}
       >
         Post
       </Button>
