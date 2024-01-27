@@ -116,7 +116,9 @@ const handleDeletePost = async () => {
             textAlign={'right'}
             color={'gray.light'}
           >
-            {formatDistanceToNow(new Date(currentPost?.createdAt))} ago
+            {currentPost?.createdAt &&
+              formatDistanceToNow(new Date(currentPost.createdAt)) +
+                ' ago'}
           </Text>
           <Box
             className="icon-container"
