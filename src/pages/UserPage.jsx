@@ -99,8 +99,8 @@ const UserPage = () => {
               </Flex>
             )}
 
-            {posts.map((post) => (
-              <Post key={post._id} post={post} postedBy={post.postedBy} />
+            {posts?.map((post) => (
+              <Post key={post?._id} post={post} postedBy={post?.postedBy} />
             ))}
           </TabPanel>
 

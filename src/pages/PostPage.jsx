@@ -22,8 +22,9 @@ import { useGetUserProfile } from '../hooks/useGetUserProfile'
 import useShowToast from '../hooks/useShowToast'
 import { useNavigate, useParams } from 'react-router-dom'
 import { formatDistanceToNow } from 'date-fns'
-import { useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import userAtom from '../atoms/userAtom'
+import postsAtom from '../atoms/postsAtom'
 // design for each post
 const PostPage = () => {
   const { colorMode, toggleColorMode } = useColorMode()
@@ -38,10 +39,11 @@ const PostPage = () => {
   // get post id from params
   const { pid } = useParams()
 
-  const [post, setPost] = useState()
+  const [posts, setPosts] = useRecoilState(postsAtom)
 
   const navigate = useNavigate()
 
+  const currentPost = posts[0]
   useEffect(() => {
     const getPost = async () => {
       try {
@@ -52,18 +54,18 @@ const PostPage = () => {
           return
         }
         console.log(data)
-        setPost(data)
+        setPosts([data])
       } catch (error) {
         showToast('Error', error.message, 'error')
       }
     }
     getPost()
-  }, [showToast, pid])
+  }, [showToast, pid, setPosts])
 
 const handleDeletePost = async () => {
   try {
     if (!window.confirm('Are you sure you want to delete this post?')) return
-    const res = await fetch(`/api/posts/${post._id}`, {
+    const res = await fetch(`/api/posts/${currentPost._id}`, {
       method: 'DELETE',
     })
     const data = await res.json()
@@ -90,6 +92,8 @@ const handleDeletePost = async () => {
   }
 
   // if (!post) return null
+  // console.log(posts)
+  // console.log(currentPost)
   return (
     <>
       <Flex>
@@ -111,7 +115,7 @@ const handleDeletePost = async () => {
             textAlign={'right'}
             color={'gray.light'}
           >
-            {formatDistanceToNow(new Date(post?.createdAt))} ago
+            {formatDistanceToNow(new Date(currentPost?.createdAt))} ago
           </Text>
           <Box
             className="icon-container"
@@ -150,8 +154,8 @@ const handleDeletePost = async () => {
         </Flex>
       </Flex>
 
-      <Text my={3}>{post?.text}</Text>
-      {post?.img && (
+      <Text my={3}>{currentPost?.text}</Text>
+      {currentPost?.img && (
         <Box
           borderRadius={6}
           overflow={'hidden'}
@@ -159,12 +163,12 @@ const handleDeletePost = async () => {
           borderColor={'gray.light'}
           w={'-webkit-fit-content'}
         >
-          <Image src={post?.img} />
+          <Image src={currentPost?.img} />
         </Box>
       )}
       {/* post actions */}
       <Flex gap={3}>
-        <Actions post={post} />
+        <Actions post={currentPost} />
       </Flex>
 
       {!currentUser && (
@@ -173,23 +177,28 @@ const handleDeletePost = async () => {
           <Flex justifyContent={'space-between'}>
             <Flex gap={2} alignItems={'center'}>
               <Text fontSize={'2xl'}>👋</Text>
-              <Text color={'gray.light'}>
-                Login to like, reply and post
-              </Text>
+              <Text color={'gray.light'}>Login to like, reply and post</Text>
             </Flex>
-            <Button onClick={()=>{
-              navigate(`/auth`)
-            }}>Login</Button>
+            <Button
+              onClick={() => {
+                navigate(`/auth`)
+              }}
+            >
+              Login
+            </Button>
           </Flex>
           <Divider my={4} />
         </>
       )}
       {/* comments/replies on post */}
-      {post?.replies.map((reply) => (
+      {currentPost?.replies.map((reply) => (
         <Comment
           key={reply._id}
           reply={reply}
-          lastReply={reply._id === post?.replies[post?.replies.length - 1]._id}
+          lastReply={
+            reply._id ===
+            currentPost?.replies[currentPost?.replies.length - 1]._id
+          }
         />
       ))}
     </>

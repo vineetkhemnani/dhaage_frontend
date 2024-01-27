@@ -16,15 +16,16 @@ import {
   Container,
 } from '@chakra-ui/react'
 import { useState } from 'react'
-import { useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import userAtom from '../atoms/userAtom'
 import useShowToast from '../hooks/useShowToast'
 import './Heart.css'
+import postsAtom from '../atoms/postsAtom'
 // actions
 // 1. like
 // 2. comment
 // 3. share
-const Actions = ({ post: post_ }) => {
+const Actions = ({ post }) => {
   // hook derived from modal
   const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -32,10 +33,10 @@ const Actions = ({ post: post_ }) => {
   const user = useRecoilValue(userAtom)
 
   // post intially has a state derived from the previous component
-  const [post, setPost] = useState(post_)
+  const [posts, setPosts] = useRecoilState(postsAtom)
 
   // state to toggle like-unlike
-  const [liked, setLiked] = useState(post_?.likes?.includes(user?._id))
+  const [liked, setLiked] = useState(post?.likes?.includes(user?._id))
 
   // loading/liking state for sending the fetch request so that it does not send it again
   const [isLiking, setIsLiking] = useState(false)
@@ -75,13 +76,23 @@ const Actions = ({ post: post_ }) => {
         // like the post by adding the id of the current user to the post likes array
         // by spreading the post object properties inside setPost and concatenating user._id
         // to the post.likes array
-        setPost({ ...post, likes: [...post.likes, user._id] })
+        const updatedPosts = posts.map((p) => {
+          if (p._id === post._id) {
+            return { ...p, likes: [...p.likes, user._id] }
+          }
+          return p
+        })
+        setPosts(updatedPosts)
       } else {
         // while unliking filter the id from the array
-        setPost({
-          ...post,
-          likes: post?.likes?.filter((id) => id !== user._id),
+        const updatedPosts = posts.map((p) => {
+          if (p._id === post._id) {
+            return { ...p, likes: p.likes.filter((id) => id !== user._id) }
+          }
+          return p
         })
+
+        setPosts(updatedPosts)
       }
       // console.log(data)
 
@@ -117,7 +128,15 @@ const Actions = ({ post: post_ }) => {
         showToast('Error', data.error, 'error')
         return
       }
-      setPost({ ...post, replies: [...post.replies, user._id] })
+
+      const updatedPosts = posts.map((p) => {
+        if (p._id === post._id) {
+          return { ...p, replies: [data, ...p.replies] }
+        }
+        return p
+      })
+
+      setPosts(updatedPosts)
       showToast('Success', 'Reply posted successfully', 'success')
       console.log(data)
       onClose()
@@ -169,7 +188,7 @@ const Actions = ({ post: post_ }) => {
               role="img"
               viewBox="467 392 58 57"
               xmlns="http://www.w3.org/2000/svg"
-              onClick={()=>handleLikeUnlike()}
+              onClick={() => handleLikeUnlike()}
             >
               <g
                 id="Group"

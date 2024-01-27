@@ -3,11 +3,13 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import useShowToast from '../hooks/useShowToast'
 import Post from '../components/Post'
+import { useRecoilState } from 'recoil'
+import postsAtom from '../atoms/postsAtom'
 
 const HomePage = () => {
   const { colorMode, toggleColorMode } = useColorMode()
 
-  const [posts, setPosts] = useState([])
+  const [posts, setPosts] = useRecoilState(postsAtom)
   const [loading, setLoading] = useState(true)
 
   // custom hook to show toasts
@@ -37,7 +39,7 @@ const HomePage = () => {
       }
     }
     getFeedPosts()
-  }, [showToast])
+  }, [showToast, setPosts])
   return (
     <>
       {loading && (
