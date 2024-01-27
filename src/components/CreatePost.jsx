@@ -27,6 +27,7 @@ import { useRecoilState, useRecoilValue } from 'recoil'
 import userAtom from '../atoms/userAtom'
 import useShowToast from '../hooks/useShowToast'
 import postsAtom from '../atoms/postsAtom'
+import { useParams } from 'react-router-dom'
 
 // max character allowed per post
 const MAX_CHAR = 500
@@ -57,6 +58,9 @@ const CreatePost = () => {
   const [posting, setPosting] = useState(false)
 
   const [posts,setPosts]=useRecoilState(postsAtom)
+
+  // get username from parameters
+  const {username} = useParams()
 
   //   handle number of characters left to post
   const handleTextChange = (e) => {
@@ -98,7 +102,10 @@ const CreatePost = () => {
       showToast('Success', 'Post created successfully', 'success')
 
       // update posts on frontend
-      setPosts([data,...posts])
+      if(username===currentUser.username){
+
+        setPosts([data,...posts])
+      }
 
       //   close the modal
       onClose()

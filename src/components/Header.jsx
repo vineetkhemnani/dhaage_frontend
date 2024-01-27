@@ -45,7 +45,7 @@ const Header = () => {
       )}
       <Image
         ml={currentUser ? 40 : 0}
-        mx={currentUser?undefined:'auto'}
+        mx={currentUser ? undefined : 'auto'}
         cursor={'pointer'}
         alt="logo"
         w={6}
@@ -62,7 +62,10 @@ const Header = () => {
         {currentUser && <SearchBar />}
 
         {currentUser && (
-          <Menu bg={colorMode === 'dark' ? 'whiteAlpha.100' : 'gray.400'}>
+          <Menu
+            bg={colorMode === 'dark' ? 'whiteAlpha.100' : 'gray.400'}
+            w={'20px'}
+          >
             <MenuButton
               as={IconButton}
               aria-label="Options"
@@ -71,6 +74,8 @@ const Header = () => {
             />
             <MenuList>
               <MenuItem
+                as={Link}
+                to={`/${currentUser?.username}`}
                 _hover={{
                   bg: colorMode === 'dark' ? 'whiteAlpha.300' : 'gray.500',
                 }}
@@ -83,21 +88,21 @@ const Header = () => {
                       marginRight: '8px',
                     }}
                   />
-                  <Link to={`/${currentUser?.username}`}>
                     <Text>Profile</Text>
-                  </Link>
+                  {/* <Link to={`/${currentUser?.username}`}>
+                  </Link> */}
                 </Box>
               </MenuItem>
               <MenuItem
                 _hover={{
                   bg: colorMode === 'dark' ? 'whiteAlpha.300' : 'gray.500',
                 }}
+                onClick={() => logout()}
               >
                 <Box
                   display="flex"
                   alignItems="center"
                   justifyContent="flex-start"
-                  onClick={() => logout()}
                 >
                   <FiLogOut
                     style={{
