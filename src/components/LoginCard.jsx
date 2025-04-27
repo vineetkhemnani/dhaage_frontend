@@ -12,6 +12,7 @@ import {
   Text,
   useColorModeValue,
   Link,
+  Divider,
 } from '@chakra-ui/react'
 import { useState } from 'react'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
@@ -19,6 +20,7 @@ import { useSetRecoilState } from 'recoil'
 import authScreenAtom from '../atoms/authAtom'
 import useShowToast from '../hooks/useShowToast'
 import userAtom from '../atoms/userAtom'
+import { FaGoogle } from 'react-icons/fa'
 
 export default function LoginCard() {
   const [showPassword, setShowPassword] = useState(false)
@@ -165,6 +167,22 @@ export default function LoginCard() {
                 </Link>
               </Text>
             </Stack>
+            <Divider />
+            <Button
+              size="lg"
+              bg={useColorModeValue('white', 'gray.700')}
+              color={useColorModeValue('gray.800', 'white')}
+              border={'1px solid'}
+              borderColor={useColorModeValue('gray.300', 'gray.600')}
+              _hover={{
+                bg: useColorModeValue('gray.50', 'gray.800'),
+                color: useColorModeValue('gray.900', 'white'),
+              }}
+              onClick={() => handleGoogleLogin()}
+              leftIcon={<FaGoogle color="#DB4437" />}
+            >
+              Sign in with Google
+            </Button>
           </Stack>
         </Box>
       </Stack>
