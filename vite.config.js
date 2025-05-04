@@ -10,7 +10,8 @@ export default defineConfig({
     proxy: {
       '/api': {
         // uncomment below when in local environment
-        target:'http://localhost:5000' ,
+        // target:'http://localhost:5000' ,
+        target:'http://localhost:8000' ,
         // target: 'https://dhaage-backend.vercel.app/',
         // target: 'https://threads-backend-2lcn.onrender.com',
         changeOrigin: true,

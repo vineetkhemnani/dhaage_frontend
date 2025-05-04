@@ -1,43 +1,144 @@
-import { Container } from '@chakra-ui/react'
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Container, Spinner, Center } from '@chakra-ui/react' // Import Spinner and Center for loading state
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom' // Import useLocation
 import UserPage from './pages/UserPage'
 import PostPage from './pages/PostPage'
 import Header from './components/Header'
 import HomePage from './pages/HomePage'
 import AuthPage from './pages/AuthPage'
-import { useRecoilValue } from 'recoil'
+import { useRecoilValue, useSetRecoilState } from 'recoil' // Import useSetRecoilState
 import userAtom from './atoms/userAtom'
-// import LogoutButton from './components/LogoutButton'
 import UpdateProfilePage from './pages/UpdateProfilePage'
 import CreatePost from './components/CreatePost'
+import { useEffect, useState } from 'react' // Import useEffect, useState
+import useShowToast from './hooks/useShowToast' // Import useShowToast
 
 function App() {
-  const user = useRecoilValue(userAtom)
+  const user = useRecoilValue(userAtom) // Read the user state
+  const setUser = useSetRecoilState(userAtom) // Get the setter function
+  const showToast = useShowToast()
+  const [loadingAuth, setLoadingAuth] = useState(true) // State to track initial auth check
+
+  // Get current location to potentially clear query params later
+  const location = useLocation()
+
+  // Effect to check authentication status on load/reload
+  useEffect(() => {
+    const checkAuth = async () => {
+      setLoadingAuth(true) // Start loading indicator
+      try {
+        // Fetch user data from a protected endpoint
+        const res = await fetch('/api/users/me') // Your protected 'me' endpoint
+
+        if (res.ok) {
+          // Only parse JSON if the response is successful (status 200-299)
+          const data = await res.json()
+          console.log('User data:', data)
+          setUser(data) // Update Recoil state
+          localStorage.setItem('user-threads', JSON.stringify(data)) // Sync local storage
+        } else if (res.status === 401) {
+          // Unauthorized - clear state, no need to parse body
+          setUser(null)
+          localStorage.removeItem('user-threads')
+        } else {
+          // Other errors during auth check
+          // Try to read the error message as text, as it might not be JSON
+          const errorText = await res.text()
+          console.error(
+            'Error checking authentication:',
+            `Status ${res.status}`,
+            errorText || '(No error body)'
+          )
+          // Decide if you want to clear state on other errors too
+          // setUser(null);
+          // localStorage.removeItem('user-threads');
+        }
+      } catch (error) {
+        // Network error, etc.
+        console.error('Network error during auth check:', error)
+        // Optionally show a toast, maybe don't clear state if it's just a network blip
+        // showToast('Error', 'Network error checking login status', 'error');
+        // Clear user state on network errors too, as we can't verify auth
+        setUser(null)
+        localStorage.removeItem('user-threads')
+      } finally {
+        setLoadingAuth(false) // Finish loading indicator
+      }
+    }
+
+    checkAuth()
+  }, [setUser])
+
+  // Effect to check for login errors passed in URL query params
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search)
+    const error = urlParams.get('error')
+    if (error) {
+      // Map common errors to user-friendly messages
+      let message = `Login failed: ${error.replace(/_/g, ' ')}`
+      if (error === 'google_auth_failed') {
+        message = 'Authentication with Google failed. Please try again.'
+      } else if (error === 'google_user_not_found') {
+        message = 'Could not retrieve user information from Google.'
+      } else if (error === 'google_login_failed') {
+        message = 'Failed to log you in after Google authentication.'
+      } else if (error === 'server_error') {
+        message =
+          'A server error occurred during login. Please try again later.'
+      }
+
+      showToast('Login Error', message, 'error')
+      // Clean the URL (optional but recommended for better UX)
+      window.history.replaceState({}, document.title, location.pathname)
+    }
+    // Run when location.search changes (new query params) or showToast becomes available
+  }, [location.search, showToast])
+
+  // Show loading indicator while checking auth initially
+  if (loadingAuth) {
+    return (
+      <Center h="100vh">
+        <Spinner size="xl" />
+      </Center>
+    )
+  }
+
+  // --- Render Routes once auth check is complete ---
   return (
+    // Using a Box or Flex instead of Container might be better if Container adds unwanted padding
+    // <Box maxW="620px" mx="auto">
     <Container maxW="620px">
       <Header />
       <Routes>
         <Route
           path="/"
-          // if user in localStorage go to home page else redirect to home route
           element={user ? <HomePage /> : <Navigate to="/auth" />}
         />
         <Route
           path="/auth"
-          // if no user redirect to auth page or login page else redirect to root route
           element={!user ? <AuthPage /> : <Navigate to={'/'} />}
         />
         <Route
           path="/update"
-          // if no user redirect to auth page or login page else go to update route
           element={user ? <UpdateProfilePage /> : <Navigate to={'/auth'} />}
         />
-        <Route path="/:username" element={<UserPage />} />
-        <Route path="/:username/post/:pid" element={<PostPage />} />
+        {/* Keep existing user/post routes */}
+        {/* It's often better to handle "not found" or "permission denied" *inside* these page components */}
+        <Route
+          path="/:username"
+          element={user ? <UserPage /> : <Navigate to="/auth" />}
+        />
+        <Route
+          path="/:username/post/:pid"
+          element={user ? <PostPage /> : <Navigate to="/auth" />}
+        />
+
+        {/* Optional: Catch-all for undefined routes */}
+        {/* <Route path="*" element={<NotFoundPage />} /> */}
       </Routes>
-      {/* {user && <LogoutButton />} */}
+
       {user && <CreatePost />}
     </Container>
+    // </Box>
   )
 }
 

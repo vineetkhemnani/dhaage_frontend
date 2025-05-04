@@ -74,11 +74,18 @@ export default function LoginCard() {
       showToast('Yayy !!', 'Logged in successfully', 'success')
     } catch (error) {
       showToast('Error', error, 'error')
-    } finally{
+    } finally {
       setLoading(false)
     }
-
-    
+  }
+  const handleGoogleLogin = () => {
+    // Construct the backend Google auth URL
+    const googleAuthUrl = `${
+      
+      'http://localhost:8000'
+    }/api/users/auth/google`
+    // Redirect the current window to the backend endpoint
+    window.location.href = googleAuthUrl
   }
   return (
     <Flex align={'center'} justify={'center'}>
