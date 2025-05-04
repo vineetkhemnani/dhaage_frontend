@@ -80,10 +80,7 @@ export default function LoginCard() {
   }
   const handleGoogleLogin = () => {
     // Construct the backend Google auth URL
-    const googleAuthUrl = `${
-      
-      'http://localhost:8000'
-    }/api/users/auth/google`
+    const googleAuthUrl = `${'https://threads-copy-backend.vercel.app'}/api/users/auth/google`
     // Redirect the current window to the backend endpoint
     window.location.href = googleAuthUrl
   }
