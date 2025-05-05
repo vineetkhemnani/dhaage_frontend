@@ -22,46 +22,49 @@ function App() {
   const location = useLocation()
 
   // Effect to check authentication status on load/reload
+  // In your App.js - update the checkAuth function
+
   useEffect(() => {
     const checkAuth = async () => {
       setLoadingAuth(true) // Start loading indicator
       try {
-        // Fetch user data from a protected endpoint
-        const res = await fetch('/api/users/me') // Your protected 'me' endpoint
+        // Update this to use the full URL to your Vercel backend
+        const res = await fetch(
+          'https://dhaage-backend.vercel.app/api/users/me',
+          {
+            method: 'GET',
+            credentials: 'include', // CRITICAL for cross-domain cookies
+            headers: {
+              'Content-Type': 'application/json',
+              // You may need to add other headers here
+            },
+          }
+        )
 
         if (res.ok) {
-          // Only parse JSON if the response is successful (status 200-299)
           const data = await res.json()
           console.log('User data:', data)
-          setUser(data) // Update Recoil state
-          localStorage.setItem('user-threads', JSON.stringify(data)) // Sync local storage
+          setUser(data)
+          localStorage.setItem('user-threads', JSON.stringify(data))
         } else if (res.status === 401) {
-          // Unauthorized - clear state, no need to parse body
           setUser(null)
           localStorage.removeItem('user-threads')
         } else {
-          // Other errors during auth check
-          // Try to read the error message as text, as it might not be JSON
           const errorText = await res.text()
           console.error(
             'Error checking authentication:',
             `Status ${res.status}`,
             errorText || '(No error body)'
           )
-          // Decide if you want to clear state on other errors too
-          // setUser(null);
-          // localStorage.removeItem('user-threads');
+          setUser(null)
+          localStorage.removeItem('user-threads')
         }
       } catch (error) {
-        // Network error, etc.
         console.error('Network error during auth check:', error)
-        // Optionally show a toast, maybe don't clear state if it's just a network blip
-        // showToast('Error', 'Network error checking login status', 'error');
-        // Clear user state on network errors too, as we can't verify auth
         setUser(null)
         localStorage.removeItem('user-threads')
       } finally {
-        setLoadingAuth(false) // Finish loading indicator
+        setLoadingAuth(false)
       }
     }
 
