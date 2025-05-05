@@ -29,17 +29,14 @@ function App() {
       setLoadingAuth(true) // Start loading indicator
       try {
         // Update this to use the full URL to your Vercel backend
-        const res = await fetch(
-          'https://dhaage-backend.vercel.app/api/users/me',
-          {
-            method: 'GET',
-            credentials: 'include', // CRITICAL for cross-domain cookies
-            headers: {
-              'Content-Type': 'application/json',
-              // You may need to add other headers here
-            },
-          }
-        )
+        const res = await fetch('https://threads-copy-backend.vercel.app/api/users/me', {
+          method: 'GET',
+          credentials: 'include', // CRITICAL for cross-domain cookies
+          headers: {
+            'Content-Type': 'application/json',
+            // You may need to add other headers here
+          },
+        })
 
         if (res.ok) {
           const data = await res.json()
