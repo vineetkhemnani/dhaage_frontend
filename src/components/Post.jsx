@@ -67,9 +67,16 @@ const Post = ({ post, postedBy }) => {
     e.preventDefault()
     try {
       if (!window.confirm('Are you sure you want to delete this post?')) return
-      const res = await fetch(`/api/posts/${post._id}`, {
-        method: 'DELETE',
-      })
+      const res = await fetch(
+        `https://threads-copy-backend.vercel.app/api/posts/${post._id}`,
+        {
+          method: 'DELETE',
+          credentials: 'include', // Crucial part: tells fetch to include cookies and HTTP Auth
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
       const data = await res.json()
       if (data.error) {
         showToast('Error', data.error, 'error')
