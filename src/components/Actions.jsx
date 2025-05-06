@@ -119,13 +119,17 @@ const Actions = ({ post }) => {
     if (isReplying) return
     setIsReplying(true)
     try {
-      const res = await fetch(`/api/posts/reply/${post._id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ text: reply }),
-      })
+      const res = await fetch(
+        `https://threads-copy-backend.vercel.app/api/posts/reply/${post._id}`,
+        {
+          method: 'PUT',
+          credentials: 'include', // Crucial part: tells fetch to include cookies and HTTP Auth
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ text: reply }),
+        }
+      )
       const data = await res.json()
 
       if (data.error) {
