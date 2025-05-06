@@ -65,13 +65,17 @@ export default function UpdateProfilePage() {
     setUpdating(true)
     try {
       // console.log(inputs)
-      const res = await fetch(`/api/users/update/${user._id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ ...inputs, profilePicture: imgUrl }),
-      })
+      const res = await fetch(
+        `https://threads-copy-backend.vercel.app/api/users/update/${user._id}`,
+        {
+          method: 'PUT',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ ...inputs, profilePicture: imgUrl }),
+        }
+      )
       const data = await res.json() // updated user object
       if (data.error) {
         showToast('Error', data.error, 'error')

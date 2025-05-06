@@ -44,7 +44,9 @@ const SearchBar = () => {
   // function to get user data
   const getUser = async () => {
     try {
-      const res = await fetch(`/api/users/profile/${searchTerm}`)
+      const res = await fetch(
+        `https://threads-copy-backend.vercel.app/api/users/profile/${searchTerm}`
+      )
       const data = await res.json()
       console.log(data)
 

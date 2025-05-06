@@ -53,12 +53,16 @@ const UserHeader = ({ user }) => {
     if (updating) return
     setUpdating(true)
     try {
-      const res = await fetch(`/api/users/follow/${user._id}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+      const res = await fetch(
+        `https://threads-copy-backend.vercel.app/api/users/follow/${user._id}`,
+        {
+          method: 'POST',
+          credentials: 'include', // Crucial part: tells fetch to include cookies and HTTP Auth
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
       const data = await res.json()
       if (data.error) {
         showToast('Error', data.error, 'error')
