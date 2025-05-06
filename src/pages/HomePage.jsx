@@ -15,14 +15,23 @@ const HomePage = () => {
   // custom hook to show toasts
   const showToast = useShowToast()
 
-
   useEffect(() => {
     // get feedPosts function
     const getFeedPosts = async () => {
       setLoading(true)
       setPosts([])
       try {
-        const res = await fetch('/api/posts/feed')
+        const res = await fetch('/api/posts/feed', {
+          method: 'GET', // Default method is GET, but explicitly stating it can be clearer
+          credentials: 'include', // Crucial part: tells fetch to include cookies and HTTP Auth
+          // You can add other options here if needed, like headers:
+          headers: {
+            'Content-Type': 'application/json',
+          //   'Accept': 'application/json',
+          //   // If you were sending a custom Authorization token (e.g., JWT):
+          //   // 'Authorization': `Bearer ${yourToken}`
+          }
+        })
         const data = await res.json()
         console.log(data)
         // error handling for data
@@ -53,10 +62,9 @@ const HomePage = () => {
         <h1>Follow some users to see the feed</h1>
       )}
       {/* if posts array has items */}
-      {posts?.map((post)=>(
-        <Post key={post._id} post={post} postedBy={post.postedBy}/>
-        )
-      )}
+      {posts?.map((post) => (
+        <Post key={post._id} post={post} postedBy={post.postedBy} />
+      ))}
     </>
     // <Link to={'/markzuckerberg'}>
     //   <Flex w={'full'} justifyContent={'center'}>
