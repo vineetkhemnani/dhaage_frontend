@@ -21,17 +21,20 @@ const HomePage = () => {
       setLoading(true)
       setPosts([])
       try {
-        const res = await fetch('/api/posts/feed', {
-          method: 'GET', // Default method is GET, but explicitly stating it can be clearer
-          credentials: 'include', // Crucial part: tells fetch to include cookies and HTTP Auth
-          // You can add other options here if needed, like headers:
-          headers: {
-            'Content-Type': 'application/json',
-          //   'Accept': 'application/json',
-          //   // If you were sending a custom Authorization token (e.g., JWT):
-          //   // 'Authorization': `Bearer ${yourToken}`
+        const res = await fetch(
+          'https://threads-copy-backend.vercel.app/api/posts/feed',
+          {
+            method: 'GET', // Default method is GET, but explicitly stating it can be clearer
+            credentials: 'include', // Crucial part: tells fetch to include cookies and HTTP Auth
+            // You can add other options here if needed, like headers:
+            headers: {
+              'Content-Type': 'application/json',
+              //   'Accept': 'application/json',
+              //   // If you were sending a custom Authorization token (e.g., JWT):
+              //   // 'Authorization': `Bearer ${yourToken}`
+            },
           }
-        })
+        )
         const data = await res.json()
         console.log('posts: ', data)
         // error handling for data
