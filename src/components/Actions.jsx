@@ -60,12 +60,16 @@ const Actions = ({ post }) => {
     // if not liking, send the fetch request and set isLiking to true
     setIsLiking(true)
     try {
-      const res = await fetch(`/api/posts/like/${post._id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+      const res = await fetch(
+        `https://threads-copy-backend.vercel.app/api/posts/like/${post._id}`,
+        {
+          method: 'PUT',
+          credentials: 'include', // Crucial part: tells fetch to include cookies and HTTP Auth
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
       const data = await res.json()
 
       if (data.error) {
