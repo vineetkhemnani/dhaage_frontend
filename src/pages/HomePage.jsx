@@ -33,7 +33,7 @@ const HomePage = () => {
           }
         })
         const data = await res.json()
-        console.log(data)
+        console.log('posts: ', data)
         // error handling for data
         if (data.error) {
           showToast('Error', data.error, 'error')
