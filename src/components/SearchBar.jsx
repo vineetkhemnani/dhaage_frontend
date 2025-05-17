@@ -77,7 +77,7 @@ const SearchBar = () => {
         <InputGroup>
           <Input
             type="text"
-            placeholder="Search for a user..."
+            placeholder="Search for a user... ex. johndoe"
             h={8}
             borderRadius={'2xl'}
             // value={searchTerm}
