@@ -77,7 +77,7 @@ const SearchBar = () => {
         <InputGroup>
           <Input
             type="text"
-            placeholder="Search for a user... ex. johndoe"
+            placeholder="Search for a user..."
             h={8}
             borderRadius={'2xl'}
             // value={searchTerm}
@@ -113,7 +113,7 @@ const SearchBar = () => {
           <ModalCloseButton />
           <ModalBody>
             <Input
-              placeholder="Search using username"
+              placeholder="Search using username ex.johndoe"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -129,7 +129,7 @@ const SearchBar = () => {
                   </Flex>
                 </Card>
               </Link>
-            ) }
+            )}
           </ModalBody>
 
           <ModalFooter>
